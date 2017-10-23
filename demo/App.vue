@@ -26,8 +26,8 @@
   <el-button type="primary" id="tips3" @click="tips3Handle">左-自定义样式</el-button>
   <h2 class="title">page</h2>
   <el-button type="primary" id="tips" @click="pageHandle">自定义</el-button>
-  <el-button type="primary" id="tips1" @click="tips1Handle">右</el-button>
-  <el-button type="primary" id="tips2" @click="tips2Handle">下</el-button>
+  <el-button type="primary" id="tips1" @click="pageHandle1">restore</el-button>
+  <el-button type="primary" id="tips2" @click="pageHandle2">closeAll</el-button>
   <el-button type="primary" id="tips3" @click="tips3Handle">左-自定义样式</el-button>
 </div>
 </template>
@@ -111,7 +111,7 @@ export default {
       });
     },
     pageHandle: function () {
-      this.$layer.iframe({
+      this.layernum = this.$layer.iframe({
         content: {
           content: formComp,
           parent: this,
@@ -123,7 +123,7 @@ export default {
         title: 'asdasdad'
       });
       return;
-      let id = this.$layer.open({
+      this.id = this.$layer.open({
         type: 2,
         content: {
           content: formComp,
@@ -136,6 +136,12 @@ export default {
         title: 'asdasd'
       });
     },
+    pageHandle1: function() {
+      this.$layer.restore(this.layernum);
+    },
+    pageHandle2: function() {
+      this.$layer.closeAll();
+    }
   }
 }
 </script>

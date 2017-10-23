@@ -13,6 +13,8 @@ let Notification = (function(vue) {
     shade: true,
     yes: '',
     cancel: '',
+    min: '',
+    restore: '',
     tips: [0, {}], //支持上右下左四个方向，通过1-4进行方向设定,可以设定tips: [1, '#c00']
     tipsMore: false, //是否允许多个tips
     shadeClose: false
@@ -197,6 +199,46 @@ let Notification = (function(vue) {
         if (oElm) {
           oElm.remove();
           delete self.instances[id];
+        }
+      }, 200);
+    }
+  }
+  /**
+   * 隐藏一个弹窗
+   * @param  {[type]} id [description]
+   * @return {[type]}    [description]
+   */
+  self.min = function(id) {
+    let oElm = document.getElementById(id);
+    if (oElm) {
+      oElm.style.display = 'none';
+      //delete self.instances[id];
+    } else {
+      setTimeout(function() {
+        let oElm = document.getElementById(id);
+        if (oElm) {
+          // oElm.hidden();
+          oElm.style.display = 'none';
+          // delete self.instances[id];
+        }
+      }, 200);
+    }
+  }
+  /**
+   * 还原一个弹窗
+   * @param  {[type]} id [description]
+   * @return {[type]}    [description]
+   */
+  self.restore = function(id) {
+    let oElm = document.getElementById(id);
+    if (oElm) {
+      oElm.style.display = 'block';
+    } else {
+      setTimeout(function() {
+        let oElm = document.getElementById(id);
+        if (oElm) {
+          // oElm.hidden();
+          oElm.style.display = 'block';
         }
       }, 200);
     }

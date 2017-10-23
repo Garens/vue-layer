@@ -10,7 +10,7 @@ export default class helper {
     if (mask && (mask.indexOf("notify-mask") > -1 || mask.indexOf("icon-remove") > -1)) {
       layer.close(id);
     }
-    console.log('aaaaa00000000');
+    //console.log('aaaaa00000000');
   }
   /**
    * 默认的yes按钮操作
@@ -34,6 +34,30 @@ export default class helper {
       options.cancel();
     } else {
       options.layer.close(options.id);
+    }
+  }
+  /**
+   * 默认最小化按钮操作
+   * @param  {[type]} event [description]
+   * @return {[type]}       [description]
+   */
+  static btnminus(event, options) {
+    if (typeof(options.min) == "function") {
+      options.min();
+    } else {
+      options.layer.min(options.id);
+    }
+  }
+  /**
+   * 默认还原按钮操作
+   * @param  {[type]} event [description]
+   * @return {[type]}       [description]
+   */
+  static btnrestore(event, options) {
+    if (typeof(options.min) == "function") {
+      options.restore();
+    } else {
+      options.layer.restore(options.id);
     }
   }
   /**
