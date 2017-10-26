@@ -28,7 +28,7 @@
   <el-button type="primary" id="tips" @click="pageHandle">自定义</el-button>
   <el-button type="primary" id="tips1" @click="pageHandle1">restore</el-button>
   <el-button type="primary" id="tips2" @click="pageHandle2">closeAll</el-button>
-  <el-button type="primary" id="tips3" @click="tips3Handle">左-自定义样式</el-button>
+  <el-button type="primary" id="tips3" @click="pageHandle3">左-自定义样式</el-button>
 </div>
 </template>
 
@@ -120,7 +120,12 @@ export default {
           }
         },
         area: ['800px', '400px'],
-        title: 'asdasdad'
+        title: 'asdasdad1',
+        shadeClose: false,
+        btntool: true,
+        center: true,
+        move: false,
+        fullScreen: true
       });
       return;
       this.id = this.$layer.open({
@@ -141,6 +146,9 @@ export default {
     },
     pageHandle2: function() {
       this.$layer.closeAll();
+    },
+    pageHandle3: function() {
+      this.$layer.setTop(this.layernum);
     }
   }
 }

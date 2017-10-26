@@ -1,4 +1,4 @@
-let Notification = (function(vue) {
+let Notification = (function (vue) {
   let NotificationConstructor = vue.extend(require('./layer.vue'));
   let self = {};
   const defOptions = {
@@ -13,25 +13,36 @@ let Notification = (function(vue) {
     shade: true,
     yes: '',
     cancel: '',
-    min: '',
-    restore: '',
+    btntool: true,  //是否显示右上角最小化和关闭图标
+    center: true,   //是否显示在窗口正中心
+    move: true,     //是否允许拖动
+    min: '',      //最小化方法
+    taggel: '',   //taggel一个窗体，即显示着则隐藏，隐藏着则显示
+    restore: '',    //还原最小化的方法
     tips: [0, {}], //支持上右下左四个方向，通过1-4进行方向设定,可以设定tips: [1, '#c00']
     tipsMore: false, //是否允许多个tips
-    shadeClose: false
+    shadeClose: false,   //是否允许点击阴影关闭
+    fullScreen: false,    //全屏显示
+    close: ''
   };
   self.instances = {};
   let seed = 0;
+  let zIndex = 1000;
   /**
    * [function description]
    * @method function
    * @param  {[type]} options [description]
    * @return {[type]}         [description]
    */
-  self.open = function(options) {
+  self.open = function (options) {
     options = mergeJson(options, defOptions);
-    let id = `notification_${  seed++}`;
+    let id = `notification_${seed++}`;
     options.id = id;
+    options.zIndex = ++zIndex;
     options.layer = self;
+    options.close = function(id) {
+      return id;
+    }
     let instance = new NotificationConstructor({
       data: options
     });
@@ -54,8 +65,8 @@ let Notification = (function(vue) {
    * @param  {[type]} yes     [description]
    * @return {[type]}         [description]
    */
-  self.alert = function(content, options, yes) {
-    switch (typeof(options)) {
+  self.alert = function (content, options, yes) {
+    switch (typeof (options)) {
       case 'function':
         yes = options;
         options = {};
@@ -66,7 +77,7 @@ let Notification = (function(vue) {
         options = {};
         break;
     }
-    yes = typeof(yes) === 'function' ? yes : '';
+    yes = typeof (yes) === 'function' ? yes : '';
 
     options.content = content || '';
     options.yes = yes;
@@ -79,8 +90,8 @@ let Notification = (function(vue) {
    * @param  {[type]} yes     [description]
    * @return {[type]}         [description]
    */
-  self.confirm = function(content, options, yes, cancel) {
-    switch (typeof(options)) {
+  self.confirm = function (content, options, yes, cancel) {
+    switch (typeof (options)) {
       case 'function':
         cancel = yes;
         yes = options;
@@ -92,8 +103,8 @@ let Notification = (function(vue) {
         options = {};
         break;
     }
-    yes = typeof(yes) === 'function' ? yes : '';
-    cancel = typeof(cancel) === 'function' ? cancel : 'cancel';
+    yes = typeof (yes) === 'function' ? yes : '';
+    cancel = typeof (cancel) === 'function' ? cancel : 'cancel';
 
     options.content = content || '';
     options.yes = yes;
@@ -108,8 +119,8 @@ let Notification = (function(vue) {
    * @param  {[type]} end     [description]
    * @return {[type]}         [description]
    */
-  self.msg = function(content, options, end) {
-    switch (typeof(options)) {
+  self.msg = function (content, options, end) {
+    switch (typeof (options)) {
       case 'function':
         end = options;
         options = {};
@@ -120,7 +131,7 @@ let Notification = (function(vue) {
         options = {};
         break;
     }
-    end = typeof(end) === 'function' ? end : '';
+    end = typeof (end) === 'function' ? end : '';
     options.type = 5;
     options.time = options.time ? options.time : 2;
     options.content = content || 'this is a msg!!';
@@ -129,8 +140,8 @@ let Notification = (function(vue) {
     return self.open(options);
   }
   //loading
-  self.loading = function(icon, options) {
-    if (typeof(icon) === 'object') {
+  self.loading = function (icon, options) {
+    if (typeof (icon) === 'object') {
       options = icon;
       icon = 0;
     }
@@ -153,13 +164,13 @@ let Notification = (function(vue) {
    * @param  {[type]} options [description]
    * @return {[type]}         [description]
    */
-  self.tips = function(content, follow, options) {
+  self.tips = function (content, follow, options) {
     options = options || {};
     options.type = 4;
     options.content = content || '';
     options.title = follow || 'body';
     options.tips = options.tips || [0, {}];
-    if (typeof(options.tips) !== 'object') {
+    if (typeof (options.tips) !== 'object') {
       options.tips = [options.tips, {}];
     }
     if (!options.tipsMore) {
@@ -172,7 +183,7 @@ let Notification = (function(vue) {
    * @param  {[type]} options [description]
    * @return {[type]}         [description]
    */
-  self.iframe = function(opt) {
+  self.iframe = function (opt) {
     let option = {
       type: 2,
       content: opt.content,
@@ -188,13 +199,13 @@ let Notification = (function(vue) {
    * @param  {[type]} id [description]
    * @return {[type]}    [description]
    */
-  self.close = function(id) {
+  self.close = function (id) {
     let oElm = document.getElementById(id);
     if (oElm) {
       oElm.remove();
       delete self.instances[id];
     } else {
-      setTimeout(function() {
+      setTimeout(function () {
         let oElm = document.getElementById(id);
         if (oElm) {
           oElm.remove();
@@ -208,13 +219,13 @@ let Notification = (function(vue) {
    * @param  {[type]} id [description]
    * @return {[type]}    [description]
    */
-  self.min = function(id) {
+  self.min = function (id) {
     let oElm = document.getElementById(id);
     if (oElm) {
       oElm.style.display = 'none';
       //delete self.instances[id];
     } else {
-      setTimeout(function() {
+      setTimeout(function () {
         let oElm = document.getElementById(id);
         if (oElm) {
           // oElm.hidden();
@@ -225,16 +236,69 @@ let Notification = (function(vue) {
     }
   }
   /**
+   * 设置当前窗口置顶
+   * @param  {[type]} id [description]
+   * @return {[type]}    [description]
+   */
+  self.setTop = function (id) {
+    let oElm = document.getElementById(id);
+    zIndex++;
+    if (oElm) {
+      oElm.style.zIndex = zIndex;
+    } else {
+      setTimeout(function () {
+        let oElm = document.getElementById(id);
+        oElm.style.zIndex = zIndex
+      }, 200);
+    }
+  }
+  /**
+   * taggel一个弹窗
+   * @param  {[type]} id [description]
+   * @return {[type]}    [description]
+   */
+  self.taggel = function (id) {
+    let oElm = document.getElementById(id);
+    if (oElm) {
+      if (oElm.style.zIndex == zIndex) {
+        if (oElm.style.display == 'none') {
+          oElm.style.display = 'block';
+        } else {
+          oElm.style.display = 'none';
+        }
+      } else {
+        oElm.style.zIndex = ++zIndex;
+        oElm.style.display = 'block';
+      }
+    } else {
+      setTimeout(function () {
+        let oElm = document.getElementById(id);
+        if (oElm) {
+          if (oElm.style.zIndex == zIndex) {
+            if (oElm.style.display == 'none') {
+              oElm.style.display = 'block';
+            } else {
+              oElm.style.display = 'none';
+            }
+          } else {
+            oElm.style.zIndex = ++zIndex;
+            oElm.style.display = 'block';
+          }
+        }
+      }, 200);
+    }
+  }
+  /**
    * 还原一个弹窗
    * @param  {[type]} id [description]
    * @return {[type]}    [description]
    */
-  self.restore = function(id) {
+  self.restore = function (id) {
     let oElm = document.getElementById(id);
     if (oElm) {
       oElm.style.display = 'block';
     } else {
-      setTimeout(function() {
+      setTimeout(function () {
         let oElm = document.getElementById(id);
         if (oElm) {
           // oElm.hidden();
@@ -248,7 +312,7 @@ let Notification = (function(vue) {
    * @param  {[type]} id [description]
    * @return {[type]}    [description]
    */
-  self.closeAll = function(type = -1) {
+  self.closeAll = function (type = -1) {
     let types = {
       'alert': 0,
       'page': 1,

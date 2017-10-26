@@ -1,10 +1,11 @@
 <template lang="html">
 <div class="notify" @mousemove="move" @mouseup="moveEnd">
-    <div class="notify-mask" @click="close"></div>
-    <div :id="options.id + '_alert'" class="notify-main notify-alert notify-iframe"  :style="{left:options.offset[0] + 'px',top:options.offset[1] +'px', margin:options.offset[2],width:options.area[0], height:options.area[1]}">
+    <div v-if="options.shadeClose" class="notify-mask"  @click="close"></div>
+    <div v-else class="notify-mask"></div>
+    <div :id="options.id + '_alert'" class="notify-main notify-alert notify-iframe" :class="options.center ? 'notify-main-center' : 'notify-main'"  :style="{left:options.offset[0] + 'px',top:options.offset[1] +'px', margin:options.offset[2],width:options.area[0], height:options.area[1]}">
         <h2 class="notice-title" @mousedown="moveStart">{{options.title}}         
         </h2>
-        <span class="control-tool">
+        <span v-if="options.btntool" class="control-tool">
             <i class="control-tool-icon ivu-icon ivu-icon-close control-tool-close" @click="btncancel"></i>
             <i class="control-tool-icon ivu-icon ivu-icon-minus control-tool-min" @click="minus"></i>
           </span>
@@ -44,8 +45,22 @@ export default {
   },
   mounted() {
     this.getContent();
+    this.setFullScreen();
   },
   methods: {
+    setFullScreen() {
+      if (this.options.fullScreen) {
+        window.addEventListener(
+          "resize",
+          () => {
+            var width = document.body.clientWidth + "px";
+            var height = document.body.clientHeight + "px";
+            this.options.area = [width, height];
+          },
+          false
+        );
+      }
+    },
     async getContent() {
       await helper.sleep(10);
       let instance = new this.options.content.content({
@@ -66,13 +81,16 @@ export default {
       helper.btnyes(event, this.options);
     },
     btncancel(event) {
+      this.options.close(this.options.id);
       helper.btncancel(event, this.options);
     },
     moveStart(event) {
-      helper.moveStart(event, this.options);
-      this.moveLeft = event.clientX;
-      this.moveTop = event.clientY;
-      this.ismove = true;
+      if (this.options.move) {
+        helper.moveStart(event, this.options);
+        this.moveLeft = event.clientX;
+        this.moveTop = event.clientY;
+        this.ismove = true;
+      }
     },
     move(event) {
       if (this.ismove) {
@@ -92,7 +110,7 @@ export default {
 
 <style>
 .control-tool {
-  width: 200px;
+  width: auto;
   height: 43px;
   position: absolute;
   top: 0px;

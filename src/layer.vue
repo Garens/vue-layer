@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="notify" :id="id" :class="{'notify-msg-p':isMsg, 'notify-tips-p': isTips}">
+  <div class="notify" :id="id" :class="{'notify-msg-p':isMsg, 'notify-tips-p': isTips}" :style="{zIndex:this.$data.zIndex}">
     <pzalert :options="this.$data" v-if="this.$data.type==0"></pzalert>
     <pzpage :options="this.$data" v-if="this.$data.type==1"></pzpage>
     <pziframe :options="this.$data" v-if="this.$data.type==2"></pziframe>
@@ -33,7 +33,8 @@ export default {
                 time: 0,
                 shade: true,
                 yes: '',
-                cancel: ''
+                cancel: '',
+                zIndex: 1000
             }
         },
         computed: {
