@@ -40,9 +40,6 @@ let Notification = (function (vue) {
     options.id = id;
     options.zIndex = ++zIndex;
     options.layer = self;
-    options.close = function(id) {
-      return id;
-    }
     let instance = new NotificationConstructor({
       data: options
     });

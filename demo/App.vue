@@ -47,6 +47,9 @@ export default {
     this.$on('asd', function (val) {
       alert(val);
     });
+    this.$on('closeLayer', function (val) {
+      console.log(val)
+    });
   },
   methods: {
     submitHandle: function () {
@@ -125,7 +128,10 @@ export default {
         btntool: true,
         center: true,
         move: false,
-        fullScreen: true
+        fullScreen: true,
+        close: function(id) {
+          // console.log(123, id);
+        }
       });
       return;
       this.id = this.$layer.open({
